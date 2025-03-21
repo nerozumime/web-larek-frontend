@@ -40,3 +40,52 @@ npm run build
 ```
 yarn build
 ```
+
+## Интерфейсы. 
+
+### IItem 
+`Представляет собой товар каталога`
+```ts
+interface IItem {
+  category: ItemCategory; // категория товара
+  title: ItemTitle; // название товара 
+  image: ItemImage; // изображение товара
+  price: ItemPrice; // цена товара 
+  description: ItemDescription; // описание товара 
+  id: ItemId; // уникальный id товара, по которому будет происходить удаление из корзины
+}
+```
+
+### IOrder 
+`Представляет собой форму заказа`
+```ts
+interface IOrder {
+  paymentMethod: PaymentMethod; // метод оплаты
+  shipAdress: string; // адрес доставки
+  email: Email; // почта получателя
+  phoneNumber: PhoneNumber; // номер телефона получателя
+}
+```
+
+### IAppStateManager
+`Менеджер событий, позволяющий понять, в какой состоянии находится сайт`
+```ts
+interface IAppStateManager {
+  items: IItem[]; // массив товаров
+  basket: IBasket; // корзина
+  order: IOrder; // заказ
+
+
+  initItems(items: IItem[]): void; // инициализируем товары при загрузке страницы
+  
+  addItemToBasket(id: ItemId): void; // добавляет товар в корзину
+  removeItemFromBasket(id: ItemId) : void; // удаляет товар из корзины 
+  getBasketItemsCount(): number; // получает кол-во товаров в корзине
+  makeOrder(): void; // из корзины попадаем в форму заказа 
+  getTotalPrice(): TotalPrice; // общая стоимость покупок в корзине
+  clearBasket(): void; // очищаем корзину после удачной покупки
+
+  setPaymentMethod(paymentMethod: PaymentMethod): void; // устанавливает способ оплаты
+  setOrderInputValue(input: InputElement): void; // устанавливает в модели данных значение поля из модели отображения
+}
+```
