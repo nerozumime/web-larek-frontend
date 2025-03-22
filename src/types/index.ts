@@ -16,16 +16,10 @@ interface IItem {
 
 type ButtonElement = HTMLButtonElement;
 
-interface IItemInBasket {
-  itemPosition: number;
-  itemContent: IItem;
-  removeButton: ButtonElement;
-}
-
 type TotalPrice = number | null;
 
 interface IBasket {
-  items: IItemInBasket[];
+  items: IItem[];
   totalPrice: TotalPrice;
 }
 
