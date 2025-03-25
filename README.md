@@ -95,11 +95,8 @@ export interface IModal { // модальное окно
   close(): void; // закрывает модальное окно
 }
 
-interface IProductItemViewConstructor{
-  new(ProductTemplate: HTMLTemplateElement, data: IProductItem): IProductItemView; // конструктор карточки
-}
-
 interface IProductItemView { // карточка товара 
+  constructor(ProductTemplate: HTMLTemplateElement, data: IProductItem): IProductItemView; // конструктор карточки
   render(): HTMLElement; // возвращает разметку карточки
 }
 
@@ -108,11 +105,8 @@ class IProductCatalogue implements IProductItemView {} // используетс
 class IProductPreview implements IProductItemView {} // используется для отображения карточки в модальном окне
 class IProductBasket implements IProductItemView {} // используется для отображения карточки в корзине
 
-interface IBasketViewСonstructor{
-  new(template: HTMLTemplateElement): IBasketView;
-}
-
 interface IBasketView { // корзина 
+  constructor(template: HTMLTemplateElement): IBasketView; // конструктор корзины
   _items: IProductItemView[]; // товары в корзине 
   _totalPrice: TotalPrice; // итоговая стоимость товаров
   submitButton: Button; // кнопка самбита корзины открывает форму заказа
