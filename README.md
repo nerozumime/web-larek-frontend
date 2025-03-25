@@ -77,72 +77,81 @@ interface IOrder { // Данные оформления заказа
 interface IBasket { // корзина товаров
 	_items: IProductItem[]; // товары 
 
-	addItemToBasket(item: IProductItem): void;
-	removeItemFromBasket(id: string): void;
-	getProductList(): IProductItem[];
-  getTotalPrice(): number;
-  clearBasket(): void;
+	addItemToBasket(item: IProductItem): void; // добавляет товар в корзину
+	removeItemFromBasket(id: string): void; // удаляет товар из корзины
+	getProductList(): IProductItem[]; // возвращает список товаров
+  getTotalPrice(): number; // возвращает итоговую стоимость товаров 
+  clearBasket(): void; // очищает корзину при успешном заказе
 }
-
-interface IOrderSuccess extends IOrder {}; 
 ```
 ### Слой представления 
 ```ts
 
 export interface IModal { // модальное окно
-  closeButton: Button;
-  submitButton: Button;
-  content: HTMLElement;
-  open(): void;
-  close(): void;
+  closeButton: Button; // кнопка закрытия есть у каждого модального окна
+  submitButton: Button; // кнопка сабмита модального окна
+  content: HTMLElement; // контент модального окна
+  open(): void; // открывает модальное окно
+  close(): void; // закрывает модальное окно
+}
+
+interface IProductItemViewConstructor{
+  new(ProductTemplate: HTMLTemplateElement, data: IProductItem): IProductItemView; // конструктор карточки
 }
 
 interface IProductItemView { // карточка товара 
-  new(ProductTemplate: HTMLTemplateElement, data: IProductItem): IProductItemView;
-  render(): HTMLElement;
+  render(): HTMLElement; // возвращает разметку карточки
 }
 
 // в зависимости от темплейта разный рендер и разное кол-во отображаемых данных
-class IProductCatalogue implements IProductItemView {}
-class IProductPreview implements IProductItemView {}
-class IProductBasket implements IProductItemView {}
+class IProductCatalogue implements IProductItemView {} // используется для отображения карточки в каталоге товаров
+class IProductPreview implements IProductItemView {} // используется для отображения карточки в модальном окне
+class IProductBasket implements IProductItemView {} // используется для отображения карточки в корзине
+
+interface IBasketViewСonstructor{
+  new(template: HTMLTemplateElement): IBasketView;
+}
 
 interface IBasketView { // корзина 
   _items: IProductItemView[]; // товары в корзине 
   _totalPrice: TotalPrice; // итоговая стоимость товаров
-  submitButton: Button; 
-  closeButton: Button;
+  submitButton: Button; // кнопка самбита корзины открывает форму заказа
+  closeButton: Button; // кнопка закрытия корзины 
 
-  new(template: HTMLTemplateElement): IBasketView;
-  set items(items: HTMLElement[]);
-  set totalPrice(total: number);
-  render(): HTMLElement;
+  set items(items: HTMLElement[]); // заполняет корзину товарами
+  set totalPrice(total: number); // устанавливает общую стоимость 
+  render(): HTMLElement; // возвращает разметку корзины
 }
 
 interface IFormView { // интерфейс формы
-	formElement: HTMLFormElement;
-	submitButton: Button;
-  closeButton: Button;
+	formElement: HTMLFormElement; // форма 
+	submitButton: Button; // кнопка самбита формы
+  closeButton: Button; // кнопка закрытия формы
 
-	render() : HTMLFormElement;
-	setValue(input: HTMLInputElement, data: string): void;
-	getValue(input: HTMLInputElement): string;
-  clearValue(input: HTMLInputElement): void;
+	render() : HTMLFormElement; // возвращает разметку формы
+	setValue(input: HTMLInputElement, data: string): void; // устанавливает значение в поле ввода 
+	getValue(input: HTMLInputElement): string; // получает значение из поля ввода
+  clearValue(input: HTMLInputElement): void; // очищает поле ввода
 }
 
 interface IOrderView extends IFormView { // форма выбора метода оплаты и указания адреса доставки
-  paymentOnlineButton: Button;
-  paymentOfflineButton: Button;
-  adressInput: HTMLInputElement;
-
-  setOnlinePayment(): void;
-  setOfflinePayment(): void;
+  paymentOnlineButton: Button; // кнопка задания метода оплаты онлайн
+  paymentOfflineButton: Button; // кнопка задания метода оплаты при получении 
+  adressInput: HTMLInputElement; // инпут содержащий адрес клиента
+ 
+  setOnlinePayment(): void; // устанавливает метод оплаты онлайн
+  setOfflinePayment(): void; // устанавливает метод оплаты при получении 
 }
 
 interface IContactsView extends IFormView { // форма указания контактных данных
-  emailInput: HTMLInputElement;
-  adressInput: HTMLInputElement;
+  emailInput: HTMLInputElement; // поле ввода адреса электронной почты 
+  adressInput: HTMLInputElement; // поле ввода адреса доставки 
 }
+
+interface IOrderSuccessView extends IModal { // модальное окно завершения оплаты 
+  _total: number; // общая стоимость покупок
+  set total(total: number); // сеттер общей стоимости покупок
+};
 ```
 ### EventEmmiter
 

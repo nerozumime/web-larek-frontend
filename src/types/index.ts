@@ -44,7 +44,6 @@ interface IBasket {
   clearBasket(): void;
 }
 
-interface IOrderSuccess extends IOrder {}; 
 
 // Слой представления 
 type Button = HTMLButtonElement;
@@ -105,3 +104,7 @@ interface IContactsView extends IFormView {
   emailInput: HTMLInputElement;
   adressInput: HTMLInputElement;
 }
+
+interface IOrderSuccess extends IModal {
+  total: number;
+}; 
