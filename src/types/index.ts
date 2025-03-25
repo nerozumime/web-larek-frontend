@@ -3,54 +3,105 @@ type ItemTitle = string;
 type ItemImage = string;
 type ItemDescription = string;
 type ItemPrice = number | string;
-type ItemId = number;
+type ItemId = string;
 
-interface IItem {
-  category: ItemCategory;
-  title: ItemTitle;
-  image: ItemImage;
-  price: ItemPrice;
-  description: ItemDescription;
-  id: ItemId;
+// Слой модели
+interface ProductList{
+  total: number;
+  items: IProductItem[];
 }
 
-type ButtonElement = HTMLButtonElement;
-
-type TotalPrice = number | null;
-
-interface IBasket {
-  items: IItem[];
-  totalPrice: TotalPrice;
+interface IProductItem {
+  id: ItemId;
+  description: ItemDescription;
+  image: ItemImage;
+  title: ItemTitle;
+  category: ItemCategory;
+  price: ItemPrice;
 }
 
 type PaymentMethod = 'Онлайн' | 'При получении'
 type Email = string;
 type PhoneNumber = string;
+type ItemIds = string[];
 
 interface IOrder {
-  paymentMethod: PaymentMethod;
-  shipAdress: string;
+  payment: PaymentMethod;
   email: Email;
-  phoneNumber: PhoneNumber;
+  phone: PhoneNumber;
+  address: string;
+  total: number;
+  items: ItemIds;
 }
 
-type InputElement = HTMLInputElement;
+interface IBasket {
+	_items: IProductItem[];
 
-interface IAppStateManager {
-  items: IItem[];
-  basket: IBasket;
-  order: IOrder;
-
-
-  initItems(items: IItem[]): void;
-  
-  addItemToBasket(id: ItemId): void;
-  removeItemFromBasket(id: ItemId) : void;
-  getBasketItemsCount(): number;
-  makeOrder(): void;
-  getTotalPrice(): TotalPrice;
+	addItemToBasket(item: IProductItem): void;
+	removeItemFromBasket(id: string): void;
+	getProductList(): IProductItem[];
+  getTotalPrice(): number;
   clearBasket(): void;
+}
 
-  setPaymentMethod(paymentMethod: PaymentMethod): void;
-  setOrderInputValue(input: InputElement): void;
+interface IOrderSuccess extends IOrder {}; 
+
+// Слой представления 
+type Button = HTMLButtonElement;
+
+export interface IModal {
+  closeButton: Button;
+  submitButton: Button;
+  content: HTMLElement;
+  open(): void;
+  close(): void;
+}
+
+interface IProductItemView {
+  new(ProductTemplate: HTMLTemplateElement, data: IProductItem): IProductItemView;
+  render(): HTMLElement;
+}
+
+// в зависимости от темплейта разный рендер и разное кол-во отображаемых данных
+class IProductCatalogue implements IProductItemView {}
+class IProductPreview implements IProductItemView {}
+class IProductBasket implements IProductItemView {}
+
+type TotalPrice = number | null;
+
+interface IBasketView {
+  _items: IProductItemView[];
+  _totalPrice: TotalPrice;
+  submitButton: Button;
+  closeButton: Button;
+
+  new(template: HTMLTemplateElement): IBasketView;
+  set items(items: HTMLElement[]);
+  set totalPrice(total: number);
+  render(): HTMLElement;
+}
+
+interface IFormView{
+	formElement: HTMLFormElement;
+	submitButton: Button;
+  closeButton: Button;
+
+	render() : HTMLFormElement;
+	setValue(input: HTMLInputElement, data: string): void;
+	getValue(input: HTMLInputElement): string;
+  clearValue(input: HTMLInputElement): void;
+}
+
+interface IOrderView extends IFormView {
+  paymentOnlineButton: Button;
+  paymentOfflineButton: Button;
+  adressInput: HTMLInputElement;
+
+  setOnlinePayment(): void;
+  setOfflinePayment(): void;
+}
+
+interface IContactsView extends IFormView {
+  emailInput: HTMLInputElement;
+  adressInput: HTMLInputElement;
 }

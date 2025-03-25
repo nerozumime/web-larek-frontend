@@ -49,33 +49,102 @@ MVP разделяет приложение на три компонента:
 - Представление. Показывает пользователю интерфейс и данные из модели. 
 - Презентер. Служит прослойкой между моделью и представлением, обрабатывает пользовательский ввод и управляет моделью и представлением.
 
-## Классы модели
+### Слой модели
 
-### IItem 
-`Товар каталога`
 ```ts
-interface IItem {
-  category: ItemCategory; // категория товара
-  title: ItemTitle; // название товара 
-  image: ItemImage; // изображение товара
-  price: ItemPrice; // цена товара 
-  description: ItemDescription; // описание товара 
-  id: ItemId; // уникальный id товара, по которому будет происходить удаление из корзины
+interface ProductList{ // данные получаемые с сервера
+  total: number; // количество товаров
+  items: IProductItem[]; // массив данных товаров
+}
+
+interface IProductItem { // данные товара
+  id: ItemId; // уникальный id 
+  description: ItemDescription; // описание
+  image: ItemImage; // ссылка на картинку 
+  title: ItemTitle; // название 
+  category: ItemCategory; // категория 
+  price: ItemPrice; // цена может быть числом или строкой (Бесценно)
+}
+
+interface IOrder { // Данные оформления заказа
+  payment?: PaymentMethod; // способ оплаты, используется для IOrderView
+  email?: Email; // почта, используется для IContactsView
+  phone?: PhoneNumber; // телефон, используется для IContactsView
+  address?: string; // адрес доставки, используется для IOrderView
+  total?: number; // итоговая стоимость, используется для модального окна при успешной оплате
+}
+
+interface IBasket { // корзина товаров
+	_items: IProductItem[]; // товары 
+
+	addItemToBasket(item: IProductItem): void;
+	removeItemFromBasket(id: string): void;
+	getProductList(): IProductItem[];
+  getTotalPrice(): number;
+  clearBasket(): void;
+}
+
+interface IOrderSuccess extends IOrder {}; 
+```
+### Слой представления 
+```ts
+
+export interface IModal { // модальное окно
+  closeButton: Button;
+  submitButton: Button;
+  content: HTMLElement;
+  open(): void;
+  close(): void;
+}
+
+interface IProductItemView { // карточка товара 
+  new(ProductTemplate: HTMLTemplateElement, data: IProductItem): IProductItemView;
+  render(): HTMLElement;
+}
+
+// в зависимости от темплейта разный рендер и разное кол-во отображаемых данных
+class IProductCatalogue implements IProductItemView {}
+class IProductPreview implements IProductItemView {}
+class IProductBasket implements IProductItemView {}
+
+interface IBasketView { // корзина 
+  _items: IProductItemView[]; // товары в корзине 
+  _totalPrice: TotalPrice; // итоговая стоимость товаров
+  submitButton: Button; 
+  closeButton: Button;
+
+  new(template: HTMLTemplateElement): IBasketView;
+  set items(items: HTMLElement[]);
+  set totalPrice(total: number);
+  render(): HTMLElement;
+}
+
+interface IFormView { // интерфейс формы
+	formElement: HTMLFormElement;
+	submitButton: Button;
+  closeButton: Button;
+
+	render() : HTMLFormElement;
+	setValue(input: HTMLInputElement, data: string): void;
+	getValue(input: HTMLInputElement): string;
+  clearValue(input: HTMLInputElement): void;
+}
+
+interface IOrderView extends IFormView { // форма выбора метода оплаты и указания адреса доставки
+  paymentOnlineButton: Button;
+  paymentOfflineButton: Button;
+  adressInput: HTMLInputElement;
+
+  setOnlinePayment(): void;
+  setOfflinePayment(): void;
+}
+
+interface IContactsView extends IFormView { // форма указания контактных данных
+  emailInput: HTMLInputElement;
+  adressInput: HTMLInputElement;
 }
 ```
-
-### IOrder 
-`Поля для отправки на сервер при успешном оформлении заказа`
-```ts
-interface IOrder {
-  paymentMethod: PaymentMethod; // метод оплаты
-  shipAdress: string; // адрес доставки
-  email: Email; // почта получателя
-  phoneNumber: PhoneNumber; // номер телефона получателя
-}
-```
-
-## Презентер
+### EventEmmiter
 
 Взаимодействие осуществляется за счет событий, генерируемых с помощью брокера событий EventEmitter из файла events.ts. 
 События, которые могут быть использованы в приложении:
@@ -89,26 +158,3 @@ interface IOrder {
 - order:open - открывает модальное окно с оформлением заказа 
 - modal:close - закрывает модальное окно 
 
-
-### IAppStateManager
-`Презентер - обрабатывает пользовательский ввод и управляет моделью и представлением`
-```ts
-interface IAppStateManager {
-  items: IItem[]; // массив товаров
-  basket: IBasket; // корзина
-  order: IOrder; // заказ
-
-
-  initItems(items: IItem[]): void; // инициализируем товары при загрузке страницы
-  
-  addItemToBasket(id: ItemId): void; // добавляет товар в корзину
-  removeItemFromBasket(id: ItemId) : void; // удаляет товар из корзины 
-  getBasketItemsCount(): number; // получает кол-во товаров в корзине
-  makeOrder(): void; // из корзины попадаем в форму заказа 
-  getTotalPrice(): TotalPrice; // общая стоимость покупок в корзине
-  clearBasket(): void; // очищаем корзину после удачной покупки
-
-  setPaymentMethod(paymentMethod: PaymentMethod): void; // устанавливает способ оплаты
-  setOrderInputValue(input: InputElement): void; // устанавливает в модели данных значение поля из модели отображения
-}
-```
