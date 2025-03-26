@@ -2,16 +2,16 @@ type ItemCategory = 'софт-скил' | 'другое' | 'дополнител
 type ItemTitle = string;
 type ItemImage = string;
 type ItemDescription = string;
-type ItemPrice = number | string;
+type ItemPrice = number | null;
 type ItemId = string;
 
 // Слой модели
-interface ProductList{
+export interface ProductList{
   total: number;
   items: IProductItem[];
 }
 
-interface IProductItem {
+export interface IProductItem {
   id: ItemId;
   description: ItemDescription;
   image: ItemImage;
@@ -25,7 +25,7 @@ type Email = string;
 type PhoneNumber = string;
 type ItemIds = string[];
 
-interface IOrder {
+export interface IOrder {
   payment: PaymentMethod;
   email: Email;
   phone: PhoneNumber;
@@ -34,7 +34,7 @@ interface IOrder {
   items: ItemIds;
 }
 
-interface IBasket {
+export interface IBasket {
 	_items: IProductItem[];
 
 	addItemToBasket(item: IProductItem): void;
@@ -56,19 +56,18 @@ export interface IModal {
   close(): void;
 }
 
-interface IProductItemView {
-  new(ProductTemplate: HTMLTemplateElement, data: IProductItem): IProductItemView;
-  render(): HTMLElement;
+export interface IProductItemView {
+  render(data: IProductItem): HTMLElement;
 }
 
 // в зависимости от темплейта разный рендер и разное кол-во отображаемых данных
-class IProductCatalogue implements IProductItemView {}
-class IProductPreview implements IProductItemView {}
-class IProductBasket implements IProductItemView {}
+
+//class ProductPreview implements IProductItemView {}
+//class ProductBasket implements IProductItemView {}
 
 type TotalPrice = number | null;
 
-interface IBasketView {
+export interface IBasketView {
   _items: IProductItemView[];
   _totalPrice: TotalPrice;
   submitButton: Button;
@@ -80,7 +79,7 @@ interface IBasketView {
   render(): HTMLElement;
 }
 
-interface IFormView{
+export interface IFormView{
 	formElement: HTMLFormElement;
 	submitButton: Button;
   closeButton: Button;
@@ -91,7 +90,7 @@ interface IFormView{
   clearValue(input: HTMLInputElement): void;
 }
 
-interface IOrderView extends IFormView {
+export interface IOrderView extends IFormView {
   paymentOnlineButton: Button;
   paymentOfflineButton: Button;
   adressInput: HTMLInputElement;
@@ -100,11 +99,11 @@ interface IOrderView extends IFormView {
   setOfflinePayment(): void;
 }
 
-interface IContactsView extends IFormView {
+export interface IContactsView extends IFormView {
   emailInput: HTMLInputElement;
   adressInput: HTMLInputElement;
 }
 
-interface IOrderSuccess extends IModal {
+export interface IOrderSuccess extends IModal {
   total: number;
 }; 
