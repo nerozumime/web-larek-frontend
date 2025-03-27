@@ -15,6 +15,9 @@ export const settings = {
   cardPreviewTemplate: '#card-preview',
   cardPreview: '.card_full',
 
+  cardBasketTemplate: '#card-basket',
+  cardBasket: '.card_compact',
+
   modalActive: 'modal_active',
   cardPreviewModal: '#modal-container',
   modalContent: '.modal__content',
@@ -22,8 +25,9 @@ export const settings = {
   modalCloseButton: '.modal__close',
   submitButton: '.button',
 
+  basketTemplate: '#basket',
   basket: '.basket',
   basketButton: '.header__basket',
-
+  basketCounter: '.header__basket-counter',
   eventClick: 'click'
 };

@@ -34,17 +34,6 @@ export interface IOrder {
   items: ItemIds;
 }
 
-export interface IBasket {
-	_items: IProductItem[];
-
-	addItemToBasket(item: IProductItem): void;
-	removeItemFromBasket(id: string): void;
-	getProductList(): IProductItem[];
-  getTotalPrice(): number;
-  clearBasket(): void;
-}
-
-
 // Слой представления 
 type Button = HTMLButtonElement;
 
@@ -68,7 +57,6 @@ export interface IBasketView {
   _items: HTMLElement[];
   _totalPrice: TotalPrice;
   submitButton: Button;
-  closeButton: Button;
 
   set items(items: HTMLElement[]);
   set totalPrice(total: number);

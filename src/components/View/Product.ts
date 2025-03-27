@@ -1,6 +1,6 @@
 import { IProductItem, IProductItemView } from "../../types";
 import { settings } from "../../utils/constants";
-import { EventEmitter } from "../base/events";
+import { IEvents } from "../base/events";
 
 class ProductCardView implements IProductItemView {
   static categoryColor: Record<string, string> = {
@@ -17,6 +17,12 @@ class ProductCardView implements IProductItemView {
   protected category: HTMLSpanElement;
   protected price: HTMLSpanElement;
   protected id: string;
+
+  protected events: IEvents;
+  
+  constructor(events: IEvents){
+    this.events = events;
+  }
 
   init(itemElement: HTMLElement): void {
     this.image = itemElement.querySelector(settings.cardImage);
@@ -40,11 +46,12 @@ class ProductCardView implements IProductItemView {
 }
 
 export class CatalogueProduct extends ProductCardView implements IProductItemView {
-  constructor(ProductTemplate: HTMLTemplateElement, data: IProductItem){
-    super();
+  constructor(events: IEvents, ProductTemplate: HTMLTemplateElement, data: IProductItem){
+    super(events);
     this.itemElement = ProductTemplate.content.querySelector(settings.cardCatalogue).cloneNode(true) as HTMLElement;
     this.init(this.itemElement);
     this.setData(data);
+    this.itemElement.addEventListener(settings.eventClick, ()=> this.events.emit('product:preview', data));
   }
 }
 
@@ -52,8 +59,8 @@ export class PreviewProduct extends ProductCardView implements IProductItemView 
   protected description: HTMLElement;
   protected submitButton: HTMLButtonElement;
 
-  constructor(ProductTemplate: HTMLTemplateElement, data: IProductItem){
-    super();
+  constructor(events: IEvents, ProductTemplate: HTMLTemplateElement, data: IProductItem){
+    super(events);
     this.itemElement = ProductTemplate.content.querySelector(settings.cardPreview).cloneNode(true) as HTMLElement;
     this.description = this.itemElement.querySelector(settings.cardDescription);
     this.submitButton = this.itemElement.querySelector(settings.submitButton);
@@ -61,8 +68,6 @@ export class PreviewProduct extends ProductCardView implements IProductItemView 
     this.setData(data);
     this.description.textContent = data.description;
 
-    this.submitButton.addEventListener(settings.eventClick, ()=> {
-      console.log(this.id);
-    })
+    this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit('basket:add', data));
   }
 }
