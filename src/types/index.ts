@@ -38,7 +38,6 @@ export interface IOrder {
 type Button = HTMLButtonElement;
 
 export interface IModal {
-  closeButton: Button;
   content: HTMLElement;
   open(content: HTMLElement): void;
   close(): void;

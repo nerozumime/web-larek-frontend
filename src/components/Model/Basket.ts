@@ -1,4 +1,5 @@
 import { IProductItem } from "../../types";
+import { settings } from "../../utils/constants";
 import { IEvents } from "../base/events";
 
 interface IBasket {
@@ -6,6 +7,7 @@ interface IBasket {
 	addProduct(item: IProductItem): void;
 	removeProduct(item: IProductItem): void;
 	getProductList(): Set<IProductItem>;
+  getProductsCount(): number;
   getTotalPrice(): number;
   clearBasket(): void;
 }
@@ -15,7 +17,7 @@ export class Basket implements IBasket {
   events: IEvents;
   constructor(events: IEvents){
     this.events = events;
-    this.events.on('basket:remove', data => {
+    this.events.on(settings.eventBasketRemove, data => {
       const product: IProductItem = data as IProductItem;
       this.removeProduct(product);
     })
@@ -23,12 +25,12 @@ export class Basket implements IBasket {
 
   addProduct(item: IProductItem): void {
     this._items.add(item);
-    this.events.emit('basket:update', {count: this.getProductsCount()});
+    this.events.emit(settings.eventBasketUpdate, {count: this.getProductsCount()});
   }
 
   removeProduct(item: IProductItem): void {
     this._items.delete(item);
-    this.events.emit('basket:update', {count: this.getProductsCount()});
+    this.events.emit(settings.eventBasketUpdate, {count: this.getProductsCount()});
   }
 
   getProductList(): Set<IProductItem> {
@@ -49,6 +51,6 @@ export class Basket implements IBasket {
 
   clearBasket(): void {
     this._items.clear();
-    this.events.emit('basket:update', {count: this.getProductsCount()});
+    this.events.emit(settings.eventBasketUpdate, {count: this.getProductsCount()});
   }
 }

@@ -1,44 +1,41 @@
 import { settings } from "../../utils/constants";
 import { IEvents } from "../base/events";
 
-export interface IBasketView {
-  _items: HTMLElement[];
-  totalPriceElement: HTMLSpanElement; 
-  submitButton: HTMLButtonElement;
-
-  clearBasket(): void;
+export interface IBasketView { 
+  totalPrice: number;
+  updateBasketCounter(counter: string): void;
   addProduct(product: HTMLElement): void;
-  set items(items: HTMLElement[]);
-  set totalPrice(total: number);
+  clearBasket(): void;
   render(): HTMLElement;
 }
 
-
 export class BasketView implements IBasketView {
-  _items: HTMLElement[];
-  submitButton: HTMLButtonElement;
-  basket: HTMLElement;
-  events: IEvents;
-  basketCounter: HTMLElement
-  basketButton: HTMLButtonElement;
-  basketList: HTMLUListElement;
-  totalPriceElement: HTMLSpanElement; 
+  protected submitButton: HTMLButtonElement;
+  protected basket: HTMLElement;
+  protected events: IEvents;
+  protected basketCounter: HTMLElement
+  protected basketButton: HTMLButtonElement;
+  protected basketList: HTMLUListElement;
+  protected totalPriceElement: HTMLSpanElement; 
 
   constructor(basket: HTMLElement, basketButton: HTMLButtonElement, events: IEvents){
     this.basket = basket;
     this.events = events;
     this.basketButton = basketButton;
     this.basketCounter = basketButton.querySelector(settings.basketCounter);
-    this.basketList = basket.querySelector('.basket__list');
-    this.totalPriceElement = basket.querySelector('.basket__price');
-    console.log(basket)
-    basketButton.addEventListener(settings.eventClick, ()=> this.events.emit('basket:open'))
-    this.events.on('basket:update', (data: {count: number})=> {
+    this.basketList = basket.querySelector(settings.basketList);
+    this.totalPriceElement = basket.querySelector(settings.basketPrice);
+
+    basketButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketOpen))
+    this.events.on(settings.eventBasketUpdate, (data: {count: number})=> {
       this.basketCounter.textContent = String(data.count);
     })
   }
+  set totalPrice(total: number){
+    this.totalPriceElement.textContent = String(total);
+  }
 
-  updateBasketCounter(counter: string){
+  updateBasketCounter(counter: string): void{
     this.basketCounter.textContent = counter;
   }
 
@@ -48,14 +45,6 @@ export class BasketView implements IBasketView {
 
   clearBasket(): void {
     this.basketList.textContent = null;
-  }
-
-  set items(items: HTMLElement[]){
-    this._items = items;
-  }
-
-  set totalPrice(total: number){
-    this.totalPriceElement.textContent = String(total);
   }
 
   render(): HTMLElement {

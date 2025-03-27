@@ -17,25 +17,24 @@ class ProductCardView implements IProductItemView {
   protected category: HTMLSpanElement;
   protected price: HTMLSpanElement;
   protected id: string;
-
   protected events: IEvents;
   
   constructor(events: IEvents){
     this.events = events;
   }
 
-  init(itemElement: HTMLElement): void {
+  protected init(itemElement: HTMLElement): void {
     this.image = itemElement.querySelector(settings.cardImage);
     this.title = itemElement.querySelector(settings.cardTitle);
     this.category = itemElement.querySelector(settings.cardCategory);
     this.price = itemElement.querySelector(settings.cardPrice);
   }
 
-  setData(data: IProductItem){
+  protected setData(data: IProductItem){
     this.image.src = data.image;
     this.title.textContent = data.title; 
     this.category.textContent = data.category;
-    this.price.textContent = String(data.price ? data.price : 'Бесценно');
+    this.price.textContent = String(data.price ? data.price : settings.zeroPrice);
     this.id = data.id;
     this.category.style.background = ProductCardView.categoryColor[data.category];
   }
@@ -51,7 +50,7 @@ export class CatalogueProduct extends ProductCardView implements IProductItemVie
     this.itemElement = ProductTemplate.content.querySelector(settings.cardCatalogue).cloneNode(true) as HTMLElement;
     this.init(this.itemElement);
     this.setData(data);
-    this.itemElement.addEventListener(settings.eventClick, ()=> this.events.emit('product:preview', data));
+    this.itemElement.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventProductPreview, data));
   }
 }
 
@@ -68,19 +67,19 @@ export class PreviewProduct extends ProductCardView implements IProductItemView 
     this.setData(data);
     this.description.textContent = data.description;
 
-    this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit('basket:add', data));
+    this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketAdd, data));
   }
 }
 
 export class BasketProduct implements IProductItemView {
-  index: HTMLSpanElement;
-  title: HTMLSpanElement;
-  price: HTMLSpanElement;
-  deleteButton: HTMLButtonElement;
-  itemElement: HTMLElement;
-  events: IEvents;
+  protected index: HTMLSpanElement;
+  protected title: HTMLSpanElement;
+  protected price: HTMLSpanElement;
+  protected deleteButton: HTMLButtonElement;
+  protected itemElement: HTMLElement;
+  protected events: IEvents;
 
-  constructor(events: IEvents, template: HTMLTemplateElement, data: IProductItem) {
+  constructor(events: IEvents, template: HTMLTemplateElement, data: IProductItem, index: number) {
     this.itemElement = template.content.querySelector(settings.cardBasket).cloneNode(true) as HTMLElement;
     this.index = this.itemElement.querySelector(settings.basketItemIndex);
     this.title = this.itemElement.querySelector(settings.cardTitle);
@@ -88,14 +87,14 @@ export class BasketProduct implements IProductItemView {
     this.deleteButton = this.itemElement.querySelector(settings.basketItemDelete);
     this.events = events;
 
-    this.deleteButton.addEventListener(settings.eventClick, ()=> this.events.emit('basket:remove', data))
-    this.setData(data);
+    this.deleteButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketRemove, data))
+    this.setData(data, index);
   }
 
-  setData(data: IProductItem){
-    this.index.textContent = '1';
+  protected setData(data: IProductItem, index: number){
+    this.index.textContent = String(index);
     this.title.textContent = data.title;
-    this.price.textContent = String(data.price ? data.price : 'Бесценно');
+    this.price.textContent = String(data.price ? data.price : settings.zeroPrice);
   }
 
   render(): HTMLElement {

@@ -2,8 +2,12 @@ export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
 export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
 
 export const settings = {
+  zeroPrice: 'Бесценно',
   apiProducts: '/product',
   gallery: '.gallery',
+  page: '.page',
+  stopScroll: 'stop-scroll',
+
   cardCatalogueTemplate: '#card-catalog',
   cardCatalogue: '.gallery__item',
   cardImage: '.card__image',
@@ -28,9 +32,17 @@ export const settings = {
 
   basketTemplate: '#basket',
   basket: '.basket',
+  basketList: '.basket__list',
+  basketPrice: '.basket__price',
   basketItemDelete: '.basket__item-delete',
   basketItemIndex: '.basket__item-index',
   basketButton: '.header__basket',
   basketCounter: '.header__basket-counter',
-  eventClick: 'click'
+
+  eventClick: 'click',
+  eventProductPreview: 'product:preview',
+  eventBasketOpen: 'basket:open',
+  eventBasketUpdate: 'basket:update',
+  eventBasketAdd: 'basket:add',
+  eventBasketRemove: 'basket:remove',
 };
