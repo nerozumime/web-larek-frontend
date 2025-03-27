@@ -15,6 +15,10 @@ export class Basket implements IBasket {
   events: IEvents;
   constructor(events: IEvents){
     this.events = events;
+    this.events.on('basket:remove', data => {
+      const product: IProductItem = data as IProductItem;
+      this.removeProduct(product);
+    })
   }
 
   addProduct(item: IProductItem): void {

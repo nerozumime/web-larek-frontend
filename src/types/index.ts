@@ -48,20 +48,7 @@ export interface IProductItemView {
   render(data: IProductItem): HTMLElement;
 }
 
-// в зависимости от темплейта разный рендер и разное кол-во отображаемых данных
-//class ProductBasket implements IProductItemView {}
-
 type TotalPrice = number | null;
-
-export interface IBasketView {
-  _items: HTMLElement[];
-  _totalPrice: TotalPrice;
-  submitButton: Button;
-
-  set items(items: HTMLElement[]);
-  set totalPrice(total: number);
-  render(): HTMLElement;
-}
 
 export interface IFormView{
 	formElement: HTMLFormElement;

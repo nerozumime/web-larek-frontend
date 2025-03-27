@@ -71,3 +71,34 @@ export class PreviewProduct extends ProductCardView implements IProductItemView 
     this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit('basket:add', data));
   }
 }
+
+export class BasketProduct implements IProductItemView {
+  index: HTMLSpanElement;
+  title: HTMLSpanElement;
+  price: HTMLSpanElement;
+  deleteButton: HTMLButtonElement;
+  itemElement: HTMLElement;
+  events: IEvents;
+
+  constructor(events: IEvents, template: HTMLTemplateElement, data: IProductItem) {
+    this.itemElement = template.content.querySelector(settings.cardBasket).cloneNode(true) as HTMLElement;
+    this.index = this.itemElement.querySelector(settings.basketItemIndex);
+    this.title = this.itemElement.querySelector(settings.cardTitle);
+    this.price = this.itemElement.querySelector(settings.cardPrice);
+    this.deleteButton = this.itemElement.querySelector(settings.basketItemDelete);
+    this.events = events;
+
+    this.deleteButton.addEventListener(settings.eventClick, ()=> this.events.emit('basket:remove', data))
+    this.setData(data);
+  }
+
+  setData(data: IProductItem){
+    this.index.textContent = '1';
+    this.title.textContent = data.title;
+    this.price.textContent = String(data.price ? data.price : 'Бесценно');
+  }
+
+  render(): HTMLElement {
+    return this.itemElement;
+  }
+}

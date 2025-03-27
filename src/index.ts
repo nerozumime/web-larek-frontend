@@ -2,15 +2,16 @@ import './scss/styles.scss';
 
 import { API_URL, CDN_URL, settings } from './utils/constants';
 import { Api, ApiPostMethods } from './components/base/api';
-import { IBasketView, IProductItem, ProductList } from './types';
-import { CatalogueProduct, PreviewProduct} from './components/View/Product';
+import { IProductItem, ProductList } from './types';
+import { CatalogueProduct, PreviewProduct, BasketProduct} from './components/View/Product';
 import { Modal } from './components/View/Modal'
 import { IEvents, EventEmitter} from './components/base/events'
-import { BasketView } from './components/View/Basket';
+import { BasketView, IBasketView } from './components/View/Basket';
 import { Basket } from './components/Model/Basket';
 
 const itemCatalogueTemplate = document.querySelector(settings.cardCatalogueTemplate) as HTMLTemplateElement;
 const itemPreviewTemplate = document.querySelector(settings.cardPreviewTemplate) as HTMLTemplateElement;
+const itemBasketTemplate = document.querySelector(settings.cardBasketTemplate) as HTMLTemplateElement;
 const modalTemplate = document.querySelector(settings.cardPreviewModal) as HTMLTemplateElement;
 const basketTemplate = document.querySelector(settings.basketTemplate) as HTMLTemplateElement;
 
@@ -41,7 +42,6 @@ getProductItems()
   })
 
   Events.on('basket:open', ()=> {
-    // basketView.items();
     ModalView.content = basketView.render();
     ModalView.open()
   })
@@ -55,6 +55,13 @@ getProductItems()
   Events.on('basket:add', data => {
     const product: IProductItem = data as IProductItem;
     BasketModel.addProduct(product);
-    console.log(BasketModel.getProductList());
   });
 
+  Events.on('basket:update', data => {
+    basketView.clearBasket();
+    Array.from(BasketModel.getProductList()).forEach(product => {
+      const basketProduct = new BasketProduct(Events, itemBasketTemplate, product);
+      basketView.addProduct(basketProduct.render());
+    })
+    basketView.totalPrice = BasketModel.getTotalPrice();
+  });

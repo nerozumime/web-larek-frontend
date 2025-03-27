@@ -11,6 +11,7 @@ export const settings = {
   cardCategory: '.card__category',
   cardPrice: '.card__price',
   cardDescription: '.card__text',
+  cardIndex: '.basket__item-index',
   
   cardPreviewTemplate: '#card-preview',
   cardPreview: '.card_full',
@@ -27,6 +28,8 @@ export const settings = {
 
   basketTemplate: '#basket',
   basket: '.basket',
+  basketItemDelete: '.basket__item-delete',
+  basketItemIndex: '.basket__item-index',
   basketButton: '.header__basket',
   basketCounter: '.header__basket-counter',
   eventClick: 'click'

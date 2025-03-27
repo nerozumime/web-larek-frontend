@@ -1,6 +1,6 @@
 import { IModal } from "../../types";
 import { settings } from "../../utils/constants";
-import { EventEmitter } from "../base/events";
+import { IEvents } from "../base/events";
 
 export class Modal implements IModal {
   closeButton: HTMLButtonElement;
