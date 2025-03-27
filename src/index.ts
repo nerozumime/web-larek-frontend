@@ -3,9 +3,8 @@ import './scss/styles.scss';
 import { API_URL, CDN_URL, settings } from './utils/constants';
 import { Api, ApiPostMethods } from './components/base/api';
 import { IProductItem, ProductList } from './types';
-import { CatalogueCard } from './components/View/CatalogueCard';
+import { CatalogueProduct, PreviewProduct} from './components/View/Product';
 import { Modal } from './components/View/Modal'
-import { ProductPreview } from './components/View/PreviewCard';
 
 const itemCatalogueTemplate = document.querySelector(settings.cardCatalogueTemplate) as HTMLTemplateElement;
 const itemPreviewTemplate = document.querySelector(settings.cardPreviewTemplate) as HTMLTemplateElement;
@@ -31,15 +30,15 @@ function getProductItems(): Promise<ProductList> {
 getProductItems()
   .then(data => {
     const Products: IProductItem[] = data.items;
-    Products.map(item => item.image = CDN_URL + item.image)
+    Products.map(product => product.image = CDN_URL + product.image)
     console.log(Products)
     Products.forEach(product => {
-      const item = new CatalogueCard(itemCatalogueTemplate);
-      console.log(new ProductPreview(itemPreviewTemplate).render(product))
-      item.render(product).addEventListener('click', ()=> {
-        ModalView.content = new ProductPreview(itemPreviewTemplate).render(product);
+      const catalogueProductView = new CatalogueProduct(itemCatalogueTemplate);
+      
+      catalogueProductView.render(product).addEventListener('click', ()=> {
+        ModalView.content = new PreviewProduct(itemPreviewTemplate).render(product);
         ModalView.open()
       })
-      gallery.append(item.render(product))
+      gallery.append(catalogueProductView.render(product))
     })
   })
