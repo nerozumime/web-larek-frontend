@@ -18,9 +18,12 @@ export const settings = {
   modalActive: 'modal_active',
   cardPreviewModal: '#modal-container',
   modalContent: '.modal__content',
+  modalContainer: '.modal__container',
   modalCloseButton: '.modal__close',
-  modalSubmitButton: '.button',
+  submitButton: '.button',
 
   basket: '.basket',
   basketButton: '.header__basket',
+
+  eventClick: 'click'
 };

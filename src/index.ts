@@ -33,12 +33,11 @@ getProductItems()
     Products.map(product => product.image = CDN_URL + product.image)
     console.log(Products)
     Products.forEach(product => {
-      const catalogueProductView = new CatalogueProduct(itemCatalogueTemplate);
-      
-      catalogueProductView.render(product).addEventListener('click', ()=> {
-        ModalView.content = new PreviewProduct(itemPreviewTemplate).render(product);
+      const catalogueProductView = new CatalogueProduct(itemCatalogueTemplate, product);
+      catalogueProductView.render().addEventListener('click', ()=> {
+        ModalView.content = new PreviewProduct(itemPreviewTemplate, product).render();
         ModalView.open()
       })
-      gallery.append(catalogueProductView.render(product))
+      gallery.append(catalogueProductView.render())
     })
   })

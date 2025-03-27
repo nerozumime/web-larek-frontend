@@ -6,20 +6,21 @@ export class Modal implements IModal {
   closeButton: HTMLButtonElement;
   _content: HTMLElement;
   modal: HTMLElement;
+  container: HTMLElement;
   
   constructor(modal: HTMLElement){
     this.modal = modal;
+    this.container = this.modal.querySelector(settings.modalContainer);
     this._content = this.modal.querySelector(settings.modalContent);
     this.closeButton = this.modal.querySelector(settings.modalCloseButton);
 
     this.closeButton.addEventListener('click', ()=> this.close());
     this.modal.addEventListener('click', ()=> this.close());
-    this._content.addEventListener('click', (evt)=> evt.stopPropagation());
+    this.container.addEventListener('click', (evt)=> evt.stopPropagation());
   }
 
   set content(content: HTMLElement){
     this._content.replaceChildren(content);
-    console.log(this._content)
   }
 
   open(): void {
