@@ -50,9 +50,8 @@ type Button = HTMLButtonElement;
 
 export interface IModal {
   closeButton: Button;
-  submitButton: Button;
   content: HTMLElement;
-  open(): void;
+  open(content: HTMLElement): void;
   close(): void;
 }
 
@@ -61,19 +60,16 @@ export interface IProductItemView {
 }
 
 // в зависимости от темплейта разный рендер и разное кол-во отображаемых данных
-
-//class ProductPreview implements IProductItemView {}
 //class ProductBasket implements IProductItemView {}
 
 type TotalPrice = number | null;
 
 export interface IBasketView {
-  _items: IProductItemView[];
+  _items: HTMLElement[];
   _totalPrice: TotalPrice;
   submitButton: Button;
   closeButton: Button;
 
-  new(template: HTMLTemplateElement): IBasketView;
   set items(items: HTMLElement[]);
   set totalPrice(total: number);
   render(): HTMLElement;

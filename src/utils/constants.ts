@@ -10,9 +10,17 @@ export const settings = {
   cardTitle: '.card__title',
   cardCategory: '.card__category',
   cardPrice: '.card__price',
+  cardDescription: '.card__text',
   
+  cardPreviewTemplate: '#card-preview',
+  cardPreview: '.card_full',
+
   modalActive: 'modal_active',
-  cardPreviewModal: '#card-preview',
+  cardPreviewModal: '#modal-container',
   modalContent: '.modal__content',
-  modalCloseButton: '.modal__close'
+  modalCloseButton: '.modal__close',
+  modalSubmitButton: '.button',
+
+  basket: '.basket',
+  basketButton: '.header__basket',
 };
