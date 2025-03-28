@@ -37,7 +37,7 @@ export class BasketView implements IBasketView {
     })
   }
   set totalPrice(total: number){
-    this.totalPriceElement.textContent = String(total ? `${total} синапсов` : `0 синапсов`);
+    this.totalPriceElement.textContent = String(total ? `${total} ${settings.currency}` : `0 ${settings.currency}`);
   }
 
   updateBasketCounter(counter: string): void{

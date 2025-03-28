@@ -2,6 +2,7 @@ export const API_URL = `${process.env.API_ORIGIN}/api/weblarek`;
 export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
 
 export const settings = {
+  currency: 'синапсов',
   zeroPrice: 'Бесценно',
   apiProducts: '/product',
   gallery: '.gallery',
@@ -42,6 +43,12 @@ export const settings = {
   orderTemplate: '#order',
   contactsTemplate: '#contacts',
   form: '.form',
+  formErrors: '.form__errors',
+  paymentCard: '.button_card',
+  paymentCash: '.button_cash',
+  formInput: '.form__input',
+  emailInput: '.email_input',
+  phoneInput: '.phone_input',
 
   eventClick: 'click',
   eventModalOpen : 'modal:open',

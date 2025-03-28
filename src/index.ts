@@ -2,18 +2,20 @@ import './scss/styles.scss';
 
 import { API_URL, CDN_URL, settings } from './utils/constants';
 import { Api, ApiPostMethods } from './components/base/api';
-import { IProductItem, ProductList } from './types';
+import { IFormView, IProductItem, ProductList } from './types';
 import { CatalogueProduct, PreviewProduct, BasketProduct} from './components/View/Product';
 import { Modal } from './components/View/Modal'
 import { IEvents, EventEmitter} from './components/base/events'
 import { BasketView, IBasketView } from './components/View/Basket';
 import { Basket } from './components/Model/Basket';
+import { Form, Order } from './components/View/Order';
 
 const itemCatalogueTemplate = document.querySelector(settings.cardCatalogueTemplate) as HTMLTemplateElement;
 const itemPreviewTemplate = document.querySelector(settings.cardPreviewTemplate) as HTMLTemplateElement;
 const itemBasketTemplate = document.querySelector(settings.cardBasketTemplate) as HTMLTemplateElement;
 const modalTemplate = document.querySelector(settings.cardPreviewModal) as HTMLTemplateElement;
 const basketTemplate = document.querySelector(settings.basketTemplate) as HTMLTemplateElement;
+const orderTemplate = document.querySelector(settings.orderTemplate) as HTMLTemplateElement;
 
 const basketElement = basketTemplate.content.querySelector(settings.basket).cloneNode(true) as HTMLElement;
 const basketButton = document.querySelector(settings.basketButton) as HTMLButtonElement;
@@ -25,6 +27,7 @@ const Events: IEvents = new EventEmitter();
 const BasketModel: Basket = new Basket(Events);
 const ModalView: Modal = new Modal(modalTemplate, Events);
 const BasketVisual: IBasketView = new BasketView(basketElement, basketButton, Events);
+const OrderView: IFormView = new Order(orderTemplate);
 
 function getProductItems(): Promise<ProductList> {
   return ApiModel.get(settings.apiProducts)
@@ -96,5 +99,6 @@ getProductItems()
   // начало оформления заказа
   Events.on(settings.eventBasketSubmit, () => {
     const price = BasketModel.getTotalPrice();
+    ModalView.content = OrderView.render();
     console.log('start ' + price)
   });

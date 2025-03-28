@@ -46,28 +46,23 @@ export interface IProductItemView {
 
 type TotalPrice = number | null;
 
-export interface IFormView{
+export interface IFormView {
 	formElement: HTMLFormElement;
-	submitButton: Button;
-
+	formErrors: HTMLSpanElement;
+  submitButton: HTMLButtonElement;
+  
 	render() : HTMLFormElement;
-	setValue(input: HTMLInputElement, data: string): void;
-	getValue(input: HTMLInputElement): string;
-  clearValue(input: HTMLInputElement): void;
 }
 
 export interface IOrderView extends IFormView {
   paymentOnlineButton: Button;
   paymentOfflineButton: Button;
   adressInput: HTMLInputElement;
-
-  setOnlinePayment(): void;
-  setOfflinePayment(): void;
 }
 
 export interface IContactsView extends IFormView {
   emailInput: HTMLInputElement;
-  adressInput: HTMLInputElement;
+  phoneInput: HTMLInputElement;
 }
 
 export interface IOrderSuccess extends IModal {
