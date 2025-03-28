@@ -57,8 +57,9 @@ export interface IFormView {
 	formErrors: HTMLSpanElement;
   submitButton: HTMLButtonElement;
   
+  setError(error: string): void;
   toggleSubmitButton(enable: boolean): void;
-	render() : HTMLFormElement;
+	render(): HTMLFormElement;
 }
 
 export interface IOrderView extends IFormView {
@@ -73,6 +74,10 @@ export interface IContactsView extends IFormView {
   phoneInput: HTMLInputElement;
 }
 
-export interface IOrderSuccess extends IModal {
-  total: number;
-}; 
+export interface IOrderSuccess {
+  success: HTMLElement;
+  successTotalPrice: HTMLElement;
+  submitButton: HTMLButtonElement; 
+  setTotalPrice(total: number): void;
+  render(): HTMLElement;
+}

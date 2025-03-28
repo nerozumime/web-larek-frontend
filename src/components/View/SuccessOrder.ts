@@ -1,7 +1,8 @@
+import { IOrderSuccess } from "../../types";
 import { settings } from "../../utils/constants";
 import { IEvents } from "../base/events";
 
-export class SuccessOrder {
+export class SuccessOrder implements IOrderSuccess{
   success: HTMLElement;
   successTotalPrice: HTMLElement;
   submitButton: HTMLButtonElement; 

@@ -50,6 +50,16 @@ function toggleOrderSubmit(){
   OrderModel.checkContactsInputs() ? ContactsView.toggleSubmitButton(true) : ContactsView.toggleSubmitButton(false)
 }
 
+function validateForm(){
+  OrderModel.checkOrderInputs() 
+  ? OrderVisual.setError('') 
+  : OrderVisual.setError('Выберите способ оплаты и заполните адрес доставки'); 
+
+  OrderModel.checkContactsInputs()
+  ? ContactsView.setError('')
+  : ContactsView.setError('Введите email и номер телефона');
+}
+
 function checkBasketButton(): void {
   BasketModel.getProductsCount() < 1 ? BasketVisual.toggleSubmitButton(false) : BasketVisual.toggleSubmitButton(true);
 }
@@ -119,6 +129,7 @@ Events.on(settings.eventOrderPayment, (data: {payment: string}) => {
   OrderVisual.togglePaymentButton(data.payment);
   OrderModel.payment = data.payment as PaymentMethod;
   toggleOrderSubmit();
+  validateForm();
 });
 
 // изменение инпута формы
@@ -134,6 +145,7 @@ Events.on(settings.eventInputChange, (data: {type: string, value: string}) => {
       OrderModel.phone = data.value;
   }
   toggleOrderSubmit();
+  validateForm();
 });
 
 // оформление заказа - контактные данные 

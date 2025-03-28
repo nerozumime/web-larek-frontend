@@ -15,6 +15,10 @@ export class Form implements IFormView {
     this.submitButton.addEventListener(settings.eventClick, (evt)=> evt.preventDefault());
   }
 
+  setError(error: string): void {
+    this.formErrors.textContent = error;
+  }
+
   toggleSubmitButton(enable: boolean): void {
     enable ? this.submitButton.removeAttribute('disabled') : this.submitButton.setAttribute('disabled', 'true');
   }
