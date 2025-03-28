@@ -2,7 +2,7 @@ import { IProductItem } from "../../types";
 import { settings } from "../../utils/constants";
 import { IEvents } from "../base/events";
 
-interface IBasket {
+export interface IBasket {
 	_items: Set<IProductItem>;
 	addProduct(item: IProductItem): void;
 	removeProduct(item: IProductItem): void;

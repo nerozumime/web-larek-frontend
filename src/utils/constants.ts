@@ -4,6 +4,9 @@ export const CDN_URL = `${process.env.API_ORIGIN}/content/weblarek`;
 export const settings = {
   currency: 'синапсов',
   zeroPrice: 'Бесценно',
+  paymentOnline: 'online',
+  paymentOffline: 'offline',
+
   apiProducts: '/product',
   gallery: '.gallery',
   page: '.page',
@@ -30,6 +33,7 @@ export const settings = {
   modalContainer: '.modal__container',
   modalCloseButton: '.modal__close',
   submitButton: '.button',
+  submitFormButton: '.submit__button',
 
   basketTemplate: '#basket',
   basket: '.basket',
@@ -49,6 +53,7 @@ export const settings = {
   formInput: '.form__input',
   emailInput: '.email_input',
   phoneInput: '.phone_input',
+  paymentButtonActive: 'button_alt-active',
 
   eventClick: 'click',
   eventModalOpen : 'modal:open',
@@ -59,4 +64,5 @@ export const settings = {
   eventBasketAdd: 'basket:add',
   eventBasketRemove: 'basket:remove',
   eventBasketSubmit: 'basket:submit',
+  eventOrderPayment: 'order:payment',
 };

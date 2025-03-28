@@ -2,13 +2,14 @@ import './scss/styles.scss';
 
 import { API_URL, CDN_URL, settings } from './utils/constants';
 import { Api, ApiPostMethods } from './components/base/api';
-import { IFormView, IProductItem, ProductList } from './types';
+import { IModal, IOrder, IProductItem, PaymentMethod, ProductList } from './types';
 import { CatalogueProduct, PreviewProduct, BasketProduct} from './components/View/Product';
 import { Modal } from './components/View/Modal'
 import { IEvents, EventEmitter} from './components/base/events'
 import { BasketView, IBasketView } from './components/View/Basket';
-import { Basket } from './components/Model/Basket';
-import { Form, Order } from './components/View/Order';
+import { Basket, IBasket } from './components/Model/Basket';
+import { OrderView } from './components/View/Order';
+import { Order } from './components/Model/Order';
 
 const itemCatalogueTemplate = document.querySelector(settings.cardCatalogueTemplate) as HTMLTemplateElement;
 const itemPreviewTemplate = document.querySelector(settings.cardPreviewTemplate) as HTMLTemplateElement;
@@ -24,14 +25,19 @@ const page = document.querySelector(settings.page) as HTMLElement;
 
 const ApiModel: Api = new Api(API_URL);
 const Events: IEvents = new EventEmitter();
-const BasketModel: Basket = new Basket(Events);
-const ModalView: Modal = new Modal(modalTemplate, Events);
+const BasketModel: IBasket = new Basket(Events);
+const ModalView: IModal = new Modal(modalTemplate, Events);
 const BasketVisual: IBasketView = new BasketView(basketElement, basketButton, Events);
-const OrderView: IFormView = new Order(orderTemplate);
+const OrderVisual: OrderView = new OrderView(orderTemplate, Events);
+const OrderModel: IOrder = new Order();
 
 function getProductItems(): Promise<ProductList> {
   return ApiModel.get(settings.apiProducts)
   .then(data => data as ProductList)
+}
+
+function toggleOrderSubmit(){
+  OrderModel.checkOrderInputs() ? OrderVisual.toggleSubmitButton(true) : OrderVisual.toggleSubmitButton(false)
 }
 
 function checkBasketButton(): void {
@@ -79,8 +85,7 @@ getProductItems()
  
   // добавление товара в корзину 
   Events.on(settings.eventBasketAdd, data => {
-    const product: IProductItem = data as IProductItem;
-    BasketModel.addProduct(product);
+    BasketModel.addProduct(data as IProductItem);
   });
 
   // обновление корзины (удаление товара, добавление товара, очистка корзины)
@@ -98,7 +103,20 @@ getProductItems()
 
   // начало оформления заказа
   Events.on(settings.eventBasketSubmit, () => {
-    const price = BasketModel.getTotalPrice();
-    ModalView.content = OrderView.render();
-    console.log('start ' + price)
+    ModalView.content = OrderVisual.render();
+  });
+
+  // установка способа оплаты
+  Events.on(settings.eventOrderPayment, (data: {payment: string}) => {
+    OrderVisual.togglePaymentButton(data.payment);
+    OrderModel.payment = data.payment as PaymentMethod;
+    toggleOrderSubmit();
+  });
+
+  // изменение инпута формы
+  Events.on('input:change', (data: {type: string, value: string}) => {
+    if(data.type === 'adress'){
+      OrderModel.address = data.value;
+    }
+    toggleOrderSubmit();
   });

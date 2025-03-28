@@ -20,7 +20,7 @@ export interface IProductItem {
   price: ItemPrice;
 }
 
-type PaymentMethod = 'online' | 'offline'
+export type PaymentMethod = 'online' | 'offline'
 
 export interface IOrder {
   payment: PaymentMethod;
@@ -29,6 +29,8 @@ export interface IOrder {
   address: string;
   total: number;
   items: string[];
+
+  checkOrderInputs(): boolean;
 }
 
 // Слой представления 
@@ -36,7 +38,7 @@ type Button = HTMLButtonElement;
 
 export interface IModal {
   content: HTMLElement;
-  open(content: HTMLElement): void;
+  open(): void;
   close(): void;
 }
 
@@ -51,6 +53,7 @@ export interface IFormView {
 	formErrors: HTMLSpanElement;
   submitButton: HTMLButtonElement;
   
+  toggleSubmitButton(enable: boolean): void;
 	render() : HTMLFormElement;
 }
 
@@ -58,6 +61,7 @@ export interface IOrderView extends IFormView {
   paymentOnlineButton: Button;
   paymentOfflineButton: Button;
   adressInput: HTMLInputElement;
+  togglePaymentButton(isOnline: string): void;
 }
 
 export interface IContactsView extends IFormView {

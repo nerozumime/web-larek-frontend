@@ -29,6 +29,7 @@ export class BasketView implements IBasketView {
     this.submitButton = basket.querySelector(settings.submitButton);
 
     basketButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketOpen))
+
     this.events.on(settings.eventBasketUpdate, (data: {count: number})=> {
       this.basketCounter.textContent = String(data.count);
     })
@@ -49,11 +50,7 @@ export class BasketView implements IBasketView {
   }
 
   toggleSubmitButton(enable: boolean): void {
-    if(enable){
-      this.submitButton.disabled = false;
-    } else {
-      this.submitButton.disabled = true;
-    }
+    enable ? this.submitButton.disabled = false : this.submitButton.disabled = true;
   }
 
   clearBasket(): void {

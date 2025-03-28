@@ -7,4 +7,8 @@ export class Order implements IOrder {
   address: string;
   total: number;
   items: string[];
+
+  checkOrderInputs(): boolean {
+    return this.payment !== undefined && this.address !== '' && this.address !== undefined;
+  }
 }
