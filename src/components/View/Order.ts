@@ -37,20 +37,18 @@ export class OrderView extends Form implements IOrderView {
     this.paymentOfflineButton = this.formElement.querySelector(settings.paymentCash);
     this.adressInput = this.formElement.querySelector(settings.formInput);
 
-    this.paymentOnlineButton.addEventListener(settings.eventClick, ()=> {
-      this.events.emit(settings.eventOrderPayment, {payment: settings.paymentOnline});
-    })
+    this.paymentOnlineButton.addEventListener(settings.eventClick, ()=> 
+      this.events.emit(settings.eventOrderPayment, {payment: settings.paymentOnline})
+    )
 
-    this.paymentOfflineButton.addEventListener(settings.eventClick, ()=> {
-      this.events.emit(settings.eventOrderPayment, {payment: settings.paymentOffline});
-    })
+    this.paymentOfflineButton.addEventListener(settings.eventClick, ()=> 
+      this.events.emit(settings.eventOrderPayment, {payment: settings.paymentOffline})
+    )
 
-    this.adressInput.addEventListener('input', ()=> this.events.emit('input:change', {type: 'adress', value: this.adressInput.value}));
+    this.adressInput.addEventListener(settings.eventInput, ()=> 
+      this.events.emit(settings.eventInputChange, {type: settings.orderAdressField, value: this.adressInput.value}));
 
-    console.log(this.submitButton)
-    this.submitButton.addEventListener(settings.eventClick, ()=> {
-      console.log('следующая форма');
-    })
+    this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventContactsPayment))
   }
 
   togglePaymentButton(isOnline: string){
@@ -67,10 +65,23 @@ export class OrderView extends Form implements IOrderView {
 export class Contacts extends Form implements IFormView {
   emailInput: HTMLInputElement;
   phoneInput: HTMLInputElement;
+  events: IEvents;
 
-  constructor(template: HTMLTemplateElement){
+  constructor(template: HTMLTemplateElement, events: IEvents){
     super(template);
+    this.events = events;
     this.emailInput = this.formElement.querySelector(settings.emailInput);
     this.phoneInput = this.formElement.querySelector(settings.phoneInput);
+
+    this.emailInput.addEventListener(settings.eventInput, ()=> 
+      this.events.emit(settings.eventInputChange, {type: settings.orderEmailField, value: this.emailInput.value}));
+
+    this.phoneInput.addEventListener(settings.eventInput, ()=> 
+      this.events.emit(settings.eventInputChange, {type: settings.orderPhoneField, value: this.phoneInput.value}));
+
+    this.submitButton.addEventListener(settings.eventClick, (evt)=> {
+      evt.preventDefault();
+      this.events.emit(settings.eventOrderDone);
+    })
   }
 }

@@ -31,6 +31,9 @@ export interface IOrder {
   items: string[];
 
   checkOrderInputs(): boolean;
+  checkContactsInputs(): boolean;
+  isFieldValid(field: string): boolean;
+  clearOrder(): void;
 }
 
 // Слой представления 

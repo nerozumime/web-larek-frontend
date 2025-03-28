@@ -8,17 +8,19 @@ import { Modal } from './components/View/Modal'
 import { IEvents, EventEmitter} from './components/base/events'
 import { BasketView, IBasketView } from './components/View/Basket';
 import { Basket, IBasket } from './components/Model/Basket';
-import { OrderView } from './components/View/Order';
+import { Contacts, OrderView } from './components/View/Order';
 import { Order } from './components/Model/Order';
+import { SuccessOrder } from './components/View/SuccessOrder';
 
 const itemCatalogueTemplate = document.querySelector(settings.cardCatalogueTemplate) as HTMLTemplateElement;
 const itemPreviewTemplate = document.querySelector(settings.cardPreviewTemplate) as HTMLTemplateElement;
 const itemBasketTemplate = document.querySelector(settings.cardBasketTemplate) as HTMLTemplateElement;
 const modalTemplate = document.querySelector(settings.cardPreviewModal) as HTMLTemplateElement;
 const basketTemplate = document.querySelector(settings.basketTemplate) as HTMLTemplateElement;
-const orderTemplate = document.querySelector(settings.orderTemplate) as HTMLTemplateElement;
+const orderTemplate = document.querySelector(settings.orderTemplate) as HTMLTemplateElement; 
+const contactsTemplate = document.querySelector(settings.contactsTemplate) as HTMLTemplateElement;
+const successTemplate = document.querySelector(settings.successTemplate) as HTMLTemplateElement;
 
-const basketElement = basketTemplate.content.querySelector(settings.basket).cloneNode(true) as HTMLElement;
 const basketButton = document.querySelector(settings.basketButton) as HTMLButtonElement;
 const gallery = document.querySelector(settings.gallery);
 const page = document.querySelector(settings.page) as HTMLElement;
@@ -27,9 +29,11 @@ const ApiModel: Api = new Api(API_URL);
 const Events: IEvents = new EventEmitter();
 const BasketModel: IBasket = new Basket(Events);
 const ModalView: IModal = new Modal(modalTemplate, Events);
-const BasketVisual: IBasketView = new BasketView(basketElement, basketButton, Events);
+const BasketVisual: IBasketView = new BasketView(basketTemplate, basketButton, Events);
 const OrderVisual: OrderView = new OrderView(orderTemplate, Events);
 const OrderModel: IOrder = new Order();
+const ContactsView: Contacts = new Contacts(contactsTemplate, Events); 
+const Success: SuccessOrder = new SuccessOrder(successTemplate, Events);
 
 function getProductItems(): Promise<ProductList> {
   return ApiModel.get(settings.apiProducts)
@@ -37,7 +41,8 @@ function getProductItems(): Promise<ProductList> {
 }
 
 function toggleOrderSubmit(){
-  OrderModel.checkOrderInputs() ? OrderVisual.toggleSubmitButton(true) : OrderVisual.toggleSubmitButton(false)
+  OrderModel.checkOrderInputs() ? OrderVisual.toggleSubmitButton(true) : OrderVisual.toggleSubmitButton(false);
+  OrderModel.checkContactsInputs() ? ContactsView.toggleSubmitButton(true) : ContactsView.toggleSubmitButton(false)
 }
 
 function checkBasketButton(): void {
@@ -61,26 +66,26 @@ getProductItems()
 
   // открытие модального окна 
   Events.on(settings.eventModalOpen, ()=> {
-    page.classList.add(settings.stopScroll)
+    page.classList.add(settings.stopScroll);
   })
 
   // закрытие модального окна
   Events.on(settings.eventModalClose, ()=> {
-    page.classList.remove(settings.stopScroll)
+    page.classList.remove(settings.stopScroll);
   })
 
   // открытие корзины
   Events.on(settings.eventBasketOpen, ()=> {
-    checkBasketButton()
+    checkBasketButton();
     ModalView.content = BasketVisual.render();
-    ModalView.open()
+    ModalView.open();
   })
 
   // нажатие по карточке товара
   Events.on(settings.eventProductPreview, product => {
     const data: IProductItem = product as IProductItem;
     ModalView.content = new PreviewProduct(Events, itemPreviewTemplate, data).render();
-    ModalView.open()
+    ModalView.open();
   })
  
   // добавление товара в корзину 
@@ -90,7 +95,7 @@ getProductItems()
 
   // обновление корзины (удаление товара, добавление товара, очистка корзины)
   Events.on(settings.eventBasketUpdate, () => {
-    checkBasketButton()
+    checkBasketButton();
     BasketVisual.clearBasket();
     let currentIndex = 1;
     Array.from(BasketModel.getProductList()).forEach(product => {
@@ -103,6 +108,8 @@ getProductItems()
 
   // начало оформления заказа
   Events.on(settings.eventBasketSubmit, () => {
+    OrderModel.total = BasketModel.getTotalPrice();
+    OrderModel.items = BasketModel.getProductIds();
     ModalView.content = OrderVisual.render();
   });
 
@@ -114,9 +121,36 @@ getProductItems()
   });
 
   // изменение инпута формы
-  Events.on('input:change', (data: {type: string, value: string}) => {
-    if(data.type === 'adress'){
-      OrderModel.address = data.value;
+  Events.on(settings.eventInputChange, (data: {type: string, value: string}) => {
+    switch(data.type){
+      case 'adress':
+        OrderModel.address = data.value;
+        break;
+      case 'email':
+        OrderModel.email = data.value;
+        break;
+      case 'phone':
+        OrderModel.phone = data.value;
     }
     toggleOrderSubmit();
   });
+
+  // оформление заказа - контактные данные 
+  Events.on(settings.eventContactsPayment, ()=> {
+    ModalView.content = ContactsView.render();
+    ModalView.open();
+  })
+
+  // завершение оформления заказа 
+  Events.on(settings.eventOrderDone, ()=> {
+    Success.setTotalPrice(OrderModel.total);
+    ModalView.content = Success.render();
+    ModalView.open();
+    BasketModel.clearBasket();
+    OrderModel.clearOrder();
+  })
+
+  // уведомление о завершении заказа
+  Events.on(settings.eventOrderSuccess, ()=> {
+    ModalView.close();
+  })

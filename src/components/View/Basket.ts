@@ -19,14 +19,14 @@ export class BasketView implements IBasketView {
   protected basketList: HTMLUListElement;
   protected totalPriceElement: HTMLSpanElement; 
 
-  constructor(basket: HTMLElement, basketButton: HTMLButtonElement, events: IEvents){
-    this.basket = basket;
+  constructor(template: HTMLTemplateElement, basketButton: HTMLButtonElement, events: IEvents){
+    this.basket = template.content.querySelector(settings.basket).cloneNode(true) as HTMLElement;
     this.events = events;
     this.basketButton = basketButton;
     this.basketCounter = basketButton.querySelector(settings.basketCounter);
-    this.basketList = basket.querySelector(settings.basketList);
-    this.totalPriceElement = basket.querySelector(settings.basketPrice);
-    this.submitButton = basket.querySelector(settings.submitButton);
+    this.basketList = this.basket.querySelector(settings.basketList);
+    this.totalPriceElement = this.basket.querySelector(settings.basketPrice);
+    this.submitButton = this.basket.querySelector(settings.submitButton);
 
     basketButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketOpen))
 
@@ -37,6 +37,7 @@ export class BasketView implements IBasketView {
       this.events.emit(settings.eventBasketSubmit);
     })
   }
+  
   set totalPrice(total: number){
     this.totalPriceElement.textContent = String(total ? `${total} ${settings.currency}` : `0 ${settings.currency}`);
   }

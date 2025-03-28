@@ -9,6 +9,7 @@ export interface IBasket {
 	getProductList(): Set<IProductItem>;
   getProductsCount(): number;
   getTotalPrice(): number;
+  getProductIds(): string[];
   clearBasket(): void;
 }
 
@@ -35,6 +36,12 @@ export class Basket implements IBasket {
 
   getProductList(): Set<IProductItem> {
     return this._items;
+  }
+  
+  getProductIds(): string[] {
+    return Array.from(this._items).map(product => {
+      return product.id;
+    })
   }
 
   getProductsCount(): number {
