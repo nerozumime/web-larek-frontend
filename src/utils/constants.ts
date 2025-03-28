@@ -8,6 +8,8 @@ export const settings = {
   paymentOffline: 'offline',
 
   apiProducts: '/product',
+  apiOrder: '/order',
+
   gallery: '.gallery',
   page: '.page',
   stopScroll: 'stop-scroll',

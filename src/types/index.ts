@@ -36,9 +36,12 @@ export interface IOrder {
   clearOrder(): void;
 }
 
-// Слой представления 
-type Button = HTMLButtonElement;
+export interface IOrderResponse {
+  id: string;
+  total: number;
+}
 
+// Слой представления 
 export interface IModal {
   content: HTMLElement;
   open(): void;
@@ -48,8 +51,6 @@ export interface IModal {
 export interface IProductItemView {
   render(data: IProductItem): HTMLElement;
 }
-
-type TotalPrice = number | null;
 
 export interface IFormView {
 	formElement: HTMLFormElement;
@@ -61,8 +62,8 @@ export interface IFormView {
 }
 
 export interface IOrderView extends IFormView {
-  paymentOnlineButton: Button;
-  paymentOfflineButton: Button;
+  paymentOnlineButton: HTMLButtonElement;
+  paymentOfflineButton: HTMLButtonElement;
   adressInput: HTMLInputElement;
   togglePaymentButton(isOnline: string): void;
 }
