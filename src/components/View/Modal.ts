@@ -7,10 +7,10 @@ export class Modal implements IModal {
   protected _content: HTMLElement;
   protected modal: HTMLElement;
   protected container: HTMLElement;
-  protected page: HTMLElement;
+  protected events: IEvents;
 
-  constructor(modal: HTMLElement, page: HTMLElement){
-    this.page = page;
+  constructor(modal: HTMLElement, events: IEvents){
+    this.events = events;
     this.modal = modal;
     this.container = this.modal.querySelector(settings.modalContainer);
     this._content = this.modal.querySelector(settings.modalContent);
@@ -26,11 +26,11 @@ export class Modal implements IModal {
   }
 
   open(): void {
-    this.page.classList.add(settings.stopScroll)
+    this.events.emit(settings.eventModalOpen)
     this.modal.classList.add(settings.modalActive);
   }
   close(): void {
-    this.page.classList.remove(settings.stopScroll)
+    this.events.emit(settings.eventModalClose)
     this.modal.classList.remove(settings.modalActive);
     this.content = null;
   }

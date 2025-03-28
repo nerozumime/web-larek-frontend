@@ -20,18 +20,15 @@ export interface IProductItem {
   price: ItemPrice;
 }
 
-type PaymentMethod = 'Онлайн' | 'При получении'
-type Email = string;
-type PhoneNumber = string;
-type ItemIds = string[];
+type PaymentMethod = 'online' | 'offline'
 
 export interface IOrder {
   payment: PaymentMethod;
-  email: Email;
-  phone: PhoneNumber;
+  email: string;
+  phone: string;
   address: string;
   total: number;
-  items: ItemIds;
+  items: string[];
 }
 
 // Слой представления 
@@ -52,7 +49,6 @@ type TotalPrice = number | null;
 export interface IFormView{
 	formElement: HTMLFormElement;
 	submitButton: Button;
-  closeButton: Button;
 
 	render() : HTMLFormElement;
 	setValue(input: HTMLInputElement, data: string): void;

@@ -5,6 +5,7 @@ export interface IBasketView {
   totalPrice: number;
   updateBasketCounter(counter: string): void;
   addProduct(product: HTMLElement): void;
+  toggleSubmitButton(enable: boolean): void;
   clearBasket(): void;
   render(): HTMLElement;
 }
@@ -25,14 +26,18 @@ export class BasketView implements IBasketView {
     this.basketCounter = basketButton.querySelector(settings.basketCounter);
     this.basketList = basket.querySelector(settings.basketList);
     this.totalPriceElement = basket.querySelector(settings.basketPrice);
+    this.submitButton = basket.querySelector(settings.submitButton);
 
     basketButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketOpen))
     this.events.on(settings.eventBasketUpdate, (data: {count: number})=> {
       this.basketCounter.textContent = String(data.count);
     })
+    this.submitButton.addEventListener(settings.eventClick, ()=> {
+      this.events.emit(settings.eventBasketSubmit);
+    })
   }
   set totalPrice(total: number){
-    this.totalPriceElement.textContent = String(total);
+    this.totalPriceElement.textContent = String(total ? `${total} синапсов` : `0 синапсов`);
   }
 
   updateBasketCounter(counter: string): void{
@@ -41,6 +46,14 @@ export class BasketView implements IBasketView {
 
   addProduct(product: HTMLElement): void {
     this.basketList.append(product);
+  }
+
+  toggleSubmitButton(enable: boolean): void {
+    if(enable){
+      this.submitButton.disabled = false;
+    } else {
+      this.submitButton.disabled = true;
+    }
   }
 
   clearBasket(): void {

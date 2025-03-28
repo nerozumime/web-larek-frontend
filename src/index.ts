@@ -19,15 +19,24 @@ const basketElement = basketTemplate.content.querySelector(settings.basket).clon
 const basketButton = document.querySelector(settings.basketButton) as HTMLButtonElement;
 const gallery = document.querySelector(settings.gallery);
 const page = document.querySelector(settings.page) as HTMLElement;
+
 const ApiModel: Api = new Api(API_URL);
 const Events: IEvents = new EventEmitter();
 const BasketModel: Basket = new Basket(Events);
-const ModalView: Modal = new Modal(modalTemplate, page);
+const ModalView: Modal = new Modal(modalTemplate, Events);
 const BasketVisual: IBasketView = new BasketView(basketElement, basketButton, Events);
 
 function getProductItems(): Promise<ProductList> {
   return ApiModel.get(settings.apiProducts)
   .then(data => data as ProductList)
+}
+
+function checkBasketButton(): void {
+  if(BasketModel.getProductsCount() < 1){
+    BasketVisual.toggleSubmitButton(false);
+  } else {
+    BasketVisual.toggleSubmitButton(true);
+  }
 }
 
 getProductItems()
@@ -41,23 +50,39 @@ getProductItems()
     })
   })
 
+  // открытие модального окна 
+  Events.on(settings.eventModalOpen, ()=> {
+    page.classList.add(settings.stopScroll)
+  })
+
+  // закрытие модального окна
+  Events.on(settings.eventModalClose, ()=> {
+    page.classList.remove(settings.stopScroll)
+  })
+
+  // открытие корзины
   Events.on(settings.eventBasketOpen, ()=> {
+    checkBasketButton()
     ModalView.content = BasketVisual.render();
     ModalView.open()
   })
 
+  // нажатие по карточке товара
   Events.on(settings.eventProductPreview, product => {
     const data: IProductItem = product as IProductItem;
     ModalView.content = new PreviewProduct(Events, itemPreviewTemplate, data).render();
     ModalView.open()
   })
  
+  // добавление товара в корзину 
   Events.on(settings.eventBasketAdd, data => {
     const product: IProductItem = data as IProductItem;
     BasketModel.addProduct(product);
   });
 
+  // обновление корзины (удаление товара, добавление товара, очистка корзины)
   Events.on(settings.eventBasketUpdate, () => {
+    checkBasketButton()
     BasketVisual.clearBasket();
     let currentIndex = 1;
     Array.from(BasketModel.getProductList()).forEach(product => {
@@ -66,4 +91,10 @@ getProductItems()
       currentIndex++;
     })
     BasketVisual.totalPrice = BasketModel.getTotalPrice();
+  });
+
+  // начало оформления заказа
+  Events.on(settings.eventBasketSubmit, () => {
+    const price = BasketModel.getTotalPrice();
+    console.log('start ' + price)
   });

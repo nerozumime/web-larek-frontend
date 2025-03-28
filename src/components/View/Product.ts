@@ -34,7 +34,7 @@ class ProductCardView implements IProductItemView {
     this.image.src = data.image;
     this.title.textContent = data.title; 
     this.category.textContent = data.category;
-    this.price.textContent = String(data.price ? data.price : settings.zeroPrice);
+    this.price.textContent = String(data.price ? `${data.price} синапсов` : settings.zeroPrice);
     this.id = data.id;
     this.category.style.background = ProductCardView.categoryColor[data.category];
   }
@@ -94,7 +94,7 @@ export class BasketProduct implements IProductItemView {
   protected setData(data: IProductItem, index: number){
     this.index.textContent = String(index);
     this.title.textContent = data.title;
-    this.price.textContent = String(data.price ? data.price : settings.zeroPrice);
+    this.price.textContent = String(data.price ? `${data.price} синапсов` : settings.zeroPrice);
   }
 
   render(): HTMLElement {

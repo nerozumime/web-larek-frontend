@@ -39,10 +39,17 @@ export const settings = {
   basketButton: '.header__basket',
   basketCounter: '.header__basket-counter',
 
+  orderTemplate: '#order',
+  contactsTemplate: '#contacts',
+  form: '.form',
+
   eventClick: 'click',
+  eventModalOpen : 'modal:open',
+  eventModalClose: 'modal:close',
   eventProductPreview: 'product:preview',
   eventBasketOpen: 'basket:open',
   eventBasketUpdate: 'basket:update',
   eventBasketAdd: 'basket:add',
   eventBasketRemove: 'basket:remove',
+  eventBasketSubmit: 'basket:submit',
 };
