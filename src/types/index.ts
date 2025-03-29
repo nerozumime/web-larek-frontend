@@ -6,7 +6,7 @@ type ItemPrice = number | null;
 type ItemId = string;
 
 // Слой модели
-export interface ProductList{
+export interface IProductList{
   total: number;
   items: IProductItem[];
 }

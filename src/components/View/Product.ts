@@ -1,5 +1,5 @@
 import { IProductItem, IProductItemView } from "../../types";
-import { settings } from "../../utils/constants";
+import { CDN_URL, settings } from "../../utils/constants";
 import { IEvents } from "../base/events";
 
 class ProductCardView implements IProductItemView {
@@ -31,7 +31,7 @@ class ProductCardView implements IProductItemView {
   }
 
   protected setData(data: IProductItem){
-    this.image.src = data.image;
+    this.image.src = CDN_URL + data.image;
     this.title.textContent = data.title; 
     this.category.textContent = data.category;
     this.price.textContent = String(data.price ? `${data.price} ${settings.currency}` : settings.zeroPrice);

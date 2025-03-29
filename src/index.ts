@@ -2,7 +2,7 @@ import './scss/styles.scss';
 
 import { API_URL, CDN_URL, settings } from './utils/constants';
 import { Api } from './components/base/api';
-import { IModal, IOrder, IOrderModel, IOrderResponse, IProductItem, PaymentMethod, ProductList } from './types';
+import { IModal, IOrder, IOrderModel, IOrderResponse, IProductItem, PaymentMethod, IProductList } from './types';
 import { CatalogueProduct, PreviewProduct, BasketProduct} from './components/View/Product';
 import { Modal } from './components/View/Modal'
 import { IEvents, EventEmitter} from './components/base/events'
@@ -12,6 +12,8 @@ import { Contacts, OrderView } from './components/View/Order';
 import { Order } from './components/Model/Order';
 import { SuccessOrder } from './components/View/SuccessOrder';
 import { Page } from './components/View/Page'
+import { ApiModel } from './components/Model/ApiModel';
+import { ProductModel } from './components/Model/ProductModel';
 
 const itemCatalogueTemplate = document.querySelector(settings.cardCatalogueTemplate) as HTMLTemplateElement;
 const itemPreviewTemplate = document.querySelector(settings.cardPreviewTemplate) as HTMLTemplateElement;
@@ -26,8 +28,9 @@ const basketButton = document.querySelector(settings.basketButton) as HTMLButton
 const gallery = document.querySelector(settings.gallery);
 const page = document.querySelector(settings.page) as HTMLElement;
 
-const apiModel: Api = new Api(API_URL);
 const events: IEvents = new EventEmitter();
+const api: Api = new Api(API_URL);
+const apiModel = new ApiModel(api, events);
 const basketModel: IBasket = new Basket(events);
 const modalView: IModal = new Modal(modalTemplate, events);
 const basketVisual: IBasketView = new BasketView(basketTemplate, basketButton, events);
@@ -36,16 +39,7 @@ const orderModel: IOrderModel = new Order();
 const contactsView: Contacts = new Contacts(contactsTemplate, events); 
 const success: SuccessOrder = new SuccessOrder(successTemplate, events);
 const pageView = new Page(page);
-
-function getProductItems(): Promise<ProductList> {
-  return apiModel.get(settings.apiProducts)
-  .then(data => data as ProductList)
-}
-
-function postOrder(order: IOrder): Promise<IOrderResponse> {
-  return apiModel.post(settings.apiOrder, order)
-  .then((data: IOrderResponse) => data);
-}
+const productModel: IProductList = new ProductModel(events);
 
 function toggleOrderSubmit(){
   orderModel.checkOrderInputs() ? orderVisual.toggleSubmitButton(true) : orderVisual.toggleSubmitButton(false);
@@ -66,16 +60,19 @@ function checkBasketButton(): void {
   basketModel.getProductsCount() < 1 ? basketVisual.toggleSubmitButton(false) : basketVisual.toggleSubmitButton(true);
 }
 
-getProductItems()
+apiModel.getProductItems()
   .then(data => {
-    const products: IProductItem[] = data.items;
-    products.map(product => product.image = CDN_URL + product.image)
-    products.forEach(product => {
-      const catalogueProductView = new CatalogueProduct(events, itemCatalogueTemplate, product);
-      gallery.append(catalogueProductView.render())
-    })
+    productModel.items = data.items;
   })
   .catch(error => console.log(error));
+
+// получение данных с сервера 
+events.on(settings.eventGetProducts, ()=> {
+  productModel.items.forEach(product => {
+    const catalogueProductView = new CatalogueProduct(events, itemCatalogueTemplate, product);
+    gallery.append(catalogueProductView.render())
+  })
+})
 
 // открытие модального окна 
 events.on(settings.eventModalOpen, ()=> {
@@ -160,7 +157,7 @@ events.on(settings.eventContactsPayment, ()=> {
 
 // завершение оформления заказа 
 events.on(settings.eventOrderDone, ()=> {
-  postOrder(orderModel.getOrderData())
+  apiModel.postOrder(orderModel.getOrderData())
     .then(data => {
       console.log(data)
       success.setTotalPrice(data.total);
