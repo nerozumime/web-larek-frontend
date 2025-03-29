@@ -18,6 +18,7 @@ export interface IProductItem {
   title: ItemTitle;
   category: ItemCategory;
   price: ItemPrice;
+  selected: boolean;
 }
 
 export type PaymentMethod = 'online' | 'offline'

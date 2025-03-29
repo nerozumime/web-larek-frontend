@@ -1,8 +1,8 @@
 import './scss/styles.scss';
 
-import { API_URL, CDN_URL, settings } from './utils/constants';
+import { API_URL, settings } from './utils/constants';
 import { Api } from './components/base/api';
-import { IModal, IOrder, IOrderModel, IOrderResponse, IProductItem, PaymentMethod, IProductList } from './types';
+import { IModal, IOrderModel, IProductItem, PaymentMethod, IProductList } from './types';
 import { CatalogueProduct, PreviewProduct, BasketProduct} from './components/View/Product';
 import { Modal } from './components/View/Modal'
 import { IEvents, EventEmitter} from './components/base/events'
@@ -99,9 +99,23 @@ events.on(settings.eventProductPreview, product => {
   modalView.open();
 })
 
+// выбор товара 
+events.on(settings.eventProductSelected, (data)=> {
+  const card: PreviewProduct = data as PreviewProduct;
+  card.selectProduct();
+})
+
 // добавление товара в корзину 
 events.on(settings.eventBasketAdd, data => {
-  basketModel.addProduct(data as IProductItem);
+  const product: IProductItem = data as IProductItem;
+  product.selected = true;
+  basketModel.addProduct(product);
+});
+
+// удаление товара из корзины
+events.on(settings.eventRemoveProduct, item => {
+  const product: IProductItem = item as IProductItem;
+  product.selected = false;
 });
 
 // обновление корзины (удаление товара, добавление товара, очистка корзины)
@@ -159,7 +173,6 @@ events.on(settings.eventContactsPayment, ()=> {
 events.on(settings.eventOrderDone, ()=> {
   apiModel.postOrder(orderModel.getOrderData())
     .then(data => {
-      console.log(data)
       success.setTotalPrice(data.total);
       modalView.content = success.render();
       modalView.open();

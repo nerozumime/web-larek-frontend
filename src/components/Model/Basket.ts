@@ -32,6 +32,7 @@ export class Basket implements IBasket {
   removeProduct(item: IProductItem): void {
     this._items.delete(item);
     this.events.emit(settings.eventBasketUpdate, {count: this.getProductsCount()});
+    this.events.emit(settings.eventRemoveProduct, item);
   }
 
   getProductList(): Set<IProductItem> {

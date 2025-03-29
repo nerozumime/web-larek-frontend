@@ -126,6 +126,7 @@ class ProductCardView implements IProductItemView { // базовый класс
   
   protected init(itemElement: HTMLElement): void; // поиск всех элементов карточки
   protected setData(data: IProductItem); // устанавливает корректные значения каждому элементу карточки
+  selectProduct(): void // выбирает товар ( товар находится в корзине )
   render(): HTMLElement; // возвращает разметку карточки
 }
 
@@ -209,4 +210,6 @@ interface IOrderSuccess { // уведомлние об успешном заве
 - 'contacts:payment' - открытие модального окна с контактными данными 
 - 'order:done' - открытие модального окна завершения оформления заказа 
 - 'order:success' - закрытие модального окна успешного оформления заказа кнопкой сабмита 
-
+- 'products:get' - получение товаров с сервера
+- 'product:selected' - уведомляет о том, что товар в корзине
+- 'product:remove' - удаление товара из корзины

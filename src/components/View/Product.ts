@@ -57,6 +57,7 @@ export class CatalogueProduct extends ProductCardView implements IProductItemVie
 export class PreviewProduct extends ProductCardView implements IProductItemView {
   protected description: HTMLElement;
   protected submitButton: HTMLButtonElement;
+  protected isSelected: boolean;
 
   constructor(events: IEvents, ProductTemplate: HTMLTemplateElement, data: IProductItem){
     super(events);
@@ -69,10 +70,26 @@ export class PreviewProduct extends ProductCardView implements IProductItemView 
 
     if(data.price != null){
       this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketAdd, data))
+      this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventProductSelected, this))
     } else {
-      this.submitButton.setAttribute('disabled', 'true');
-      this.submitButton.textContent = 'Не для продажи'
+      this.toggleButton(false);
+      this.setButtonText('Не для продажи')
     }
+
+    if(data.selected) this.selectProduct();
+  }
+
+  selectProduct(): void {
+    this.toggleButton(false);
+    this.setButtonText('Товар в корзине')
+  }
+
+  toggleButton(enable: boolean): void {
+    enable ? this.submitButton.setAttribute('disabled', 'true') : this.submitButton.setAttribute('disabled', 'false')
+  }
+
+  setButtonText(text: string): void {
+    this.submitButton.textContent = text;
   }
 }
 

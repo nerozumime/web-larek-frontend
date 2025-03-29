@@ -6,9 +6,7 @@ export class ProductModel implements IProductList {
   total: number;
   _items: IProductItem[];
 
-  constructor(protected events: IEvents){
-
-  }
+  constructor(protected events: IEvents){}
 
   set items(items: IProductItem[]){
     this._items = items;

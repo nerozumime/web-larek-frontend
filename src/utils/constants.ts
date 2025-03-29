@@ -78,5 +78,7 @@ export const settings = {
   eventContactsPayment: 'contacts:payment',
   eventOrderDone: 'order:done',
   eventOrderSuccess: 'order:success',
-  eventGetProducts: 'products:get'
+  eventGetProducts: 'products:get',
+  eventProductSelected : 'product:selected',
+  eventRemoveProduct: 'product:remove',
 };
