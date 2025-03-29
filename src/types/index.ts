@@ -29,11 +29,14 @@ export interface IOrder {
   address: string;
   total: number;
   items: string[];
+}
 
+export interface IOrderModel extends IOrder {
   checkOrderInputs(): boolean;
   checkContactsInputs(): boolean;
   isFieldValid(field: string): boolean;
   clearOrder(): void;
+  getOrderData(): IOrder;
 }
 
 export interface IOrderResponse {

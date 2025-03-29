@@ -1,6 +1,6 @@
-import { IOrder } from "../../types";
+import { IOrder, IOrderModel } from "../../types";
 
-export class Order implements IOrder {
+export class Order implements IOrderModel {
   payment: 'online' | 'offline';
   email: string;
   phone: string;
@@ -23,5 +23,16 @@ export class Order implements IOrder {
   clearOrder(): void {
     this.total = 0;
     this.items = [];
+  }
+
+  getOrderData(): IOrder {
+    return {
+      payment: this.payment,
+      email: this.email,
+      phone: this.phone,
+      address: this.address,
+      total: this.total,
+      items: this.items,
+    }
   }
 }

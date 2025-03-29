@@ -3,11 +3,13 @@ import { IEvents } from "../base/events";
 
 export interface IBasketView { 
   totalPrice: number;
+  setProductsList(products: HTMLElement[]): void;
   updateBasketCounter(counter: string): void;
   addProduct(product: HTMLElement): void;
   toggleSubmitButton(enable: boolean): void;
   clearBasket(): void;
   render(): HTMLElement;
+  setEmptyBasketTitle(): void;
 }
 
 export class BasketView implements IBasketView {
@@ -36,6 +38,20 @@ export class BasketView implements IBasketView {
     this.submitButton.addEventListener(settings.eventClick, ()=> {
       this.events.emit(settings.eventBasketSubmit);
     })
+  }
+
+  setProductsList(products: HTMLElement[]): void {
+    if(products.length){
+      this.basketList.replaceChildren(...products) 
+    } else {
+      this.setEmptyBasketTitle();
+    }
+  }
+
+  setEmptyBasketTitle(): void {
+    const emptyBasketTitle = document.createElement('p');
+    emptyBasketTitle.textContent = 'Корзина пустая'
+    this.basketList.replaceChildren(emptyBasketTitle);
   }
   
   set totalPrice(total: number){

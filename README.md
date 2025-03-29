@@ -6,6 +6,8 @@
 - src/ — исходные файлы проекта
 - src/components/ — папка с JS компонентами
 - src/components/base/ — папка с базовым кодом
+- src/components/Model - папка с классами модели данных
+- src/components/View - папка с классами слоя представления
 
 Важные файлы:
 - src/pages/index.html — HTML-файл главной страницы
@@ -72,11 +74,14 @@ interface IOrder { // Данные оформления заказа
   phone: PhoneNumber; // телефон, используется для IContactsView
   address: string; // адрес доставки, используется для IOrderView
   total: number; // итоговая стоимость, используется для модального окна при успешной оплате
+}
 
+interface IOrderModel extends IOrder { // модель заказа 
   checkOrderInputs(): boolean; // проверка заполненности полей payment и address
   checkContactsInputs(): boolean; // проверка заполненности полей email и phone
   isFieldValid(field: string): boolean; // проверка заполненности поля
   clearOrder(): void; // очистка заказа при успешном оформлении заказа 
+  getOrderData(): IOrder; // возвращает данные о заказе
 }
 
 interface IBasket { // корзина товаров

@@ -67,7 +67,12 @@ export class PreviewProduct extends ProductCardView implements IProductItemView 
     this.setData(data);
     this.description.textContent = data.description;
 
-    this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketAdd, data));
+    if(data.price != null){
+      this.submitButton.addEventListener(settings.eventClick, ()=> this.events.emit(settings.eventBasketAdd, data))
+    } else {
+      this.submitButton.setAttribute('disabled', 'true');
+      this.submitButton.textContent = 'Не для продажи'
+    }
   }
 }
 
