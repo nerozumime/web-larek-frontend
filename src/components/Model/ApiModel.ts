@@ -1,9 +1,9 @@
-import { IOrder, IOrderResponse, IProductList } from "../../types";
+import { IApiModel, IOrder, IOrderResponse, IProductList } from "../../types";
 import { settings } from "../../utils/constants";
 import { Api } from "../base/api";
 import { IEvents } from "../base/events";
 
-export class ApiModel {
+export class ApiModel implements IApiModel {
   constructor(protected api: Api, protected events: IEvents){}
 
   getProductItems(): Promise<IProductList> {

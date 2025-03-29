@@ -1,6 +1,7 @@
+import { IPage } from "../../types";
 import { settings } from "../../utils/constants";
 
-export class Page {
+export class Page implements IPage {
   constructor(protected page: HTMLElement){}
 
   disableScroll(): void {

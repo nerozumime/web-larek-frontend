@@ -6,6 +6,11 @@ type ItemPrice = number | null;
 type ItemId = string;
 
 // Слой модели
+export interface IApiModel {
+  getProductItems(): Promise<IProductList>;
+  postOrder(order: IOrder): Promise<IOrderResponse>;
+}
+
 export interface IProductList{
   total: number;
   items: IProductItem[];
@@ -46,6 +51,11 @@ export interface IOrderResponse {
 }
 
 // Слой представления 
+export interface IPage {
+  disableScroll(): void;
+  enableScroll(): void;
+}
+
 export interface IModal {
   content: HTMLElement;
   open(): void;

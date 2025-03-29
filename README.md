@@ -54,6 +54,11 @@ MVP разделяет приложение на три компонента:
 ### Слой модели
 
 ```ts
+export interface IApiModel { // модель апи
+  getProductItems(): Promise<IProductList>; // получает с сервера список товаров
+  postOrder(order: IOrder): Promise<IOrderResponse>; // отправляет на сервер данные о заказе
+}
+
 interface ProductList{ // данные получаемые с сервера
   total: number; // количество товаров
   items: IProductItem[]; // массив данных товаров
@@ -98,6 +103,11 @@ interface IBasket { // корзина товаров
 ```
 ### Слой представления 
 ```ts
+
+export interface IPage { // страница сайта
+  disableScroll(): void; // отключает прокрутку страницы 
+  enableScroll(): void; // включает прокрутку страницы 
+}
 
 export interface IModal { // модальное окно
   closeButton: Button; // кнопка закрытия есть у каждого модального окна
